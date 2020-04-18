@@ -4,7 +4,9 @@
 #define SRC_GRAPH_GRAPH_H_
 
 #include <list>
+#ifdef GRAPH_ENABLE_VERBOSE
 #include <iostream>
+#endif
 #include <algorithm>
 
 #define GRAPH_ERROR 1
