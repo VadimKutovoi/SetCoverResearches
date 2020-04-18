@@ -13,15 +13,19 @@
 #define GRAPH_SUCCESS 0
 
 class graph {
+#define gcont std::list<int>  // defining graph container type
+#define vmark int  // defining vertex mark type
     int num_vertices;
-    std::list<int> *adj_matrix;
+    gcont *adj_matrix;
+
  public:
     explicit graph(int _num_vertices) : num_vertices(_num_vertices) {
         try {
-            adj_matrix = new std::list<int>[_num_vertices];
+            adj_matrix = new gcont[_num_vertices];
         } catch(std::bad_alloc& ex) {
 #ifdef GRAPH_ENABLE_VERBOSE
-            std::cout << "Error::graph::graph() can't allocate memory for graph" << std::endl;
+            std::cout << "Error::graph::graph() can't allocate memory for graph"\
+                      << std::endl;
 #endif
         }
     }
@@ -30,9 +34,9 @@ class graph {
         delete[] adj_matrix;
     }
 
-    int addEdge(int begin, int end);
-    int getDegree(int vertex);
-    bool isConnected(int begin, int end);
+    vmark addEdge(vmark begin, vmark end);
+    vmark getDegree(vmark vertex);
+    bool isConnected(vmark begin, vmark end);
 };
 
 int graph::addEdge(int begin, int end) {
