@@ -50,6 +50,24 @@ TEST(GraphTest, getDegreeReturnsErrorIfVertNegative) {
     EXPECT_EQ(g.getDegree(-1), GRAPH_ERROR);
 }
 
+TEST(GraphTest, GetAdjListIsCorrect) {
+    graph g(2);
+
+    g.addEdge(0, 1);
+
+    EXPECT_EQ(g.getAdjList(0)[0], 1);
+}
+
+TEST(GraphTest, ValidVertexIsValid) {
+    graph g(1);
+    EXPECT_TRUE(g.isValidVertex(0));
+}
+
+TEST(GraphTest, InvalidVertexIsInvalid) {
+    graph g(1);
+    EXPECT_FALSE(g.isValidVertex(2));
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

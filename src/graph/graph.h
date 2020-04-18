@@ -3,7 +3,7 @@
 #ifndef SRC_GRAPH_GRAPH_H_
 #define SRC_GRAPH_GRAPH_H_
 
-#include <list>
+#include <vector>
 #ifdef GRAPH_ENABLE_VERBOSE
 #include <iostream>
 #endif
@@ -14,9 +14,10 @@
 #define GRAPH_TRUE true
 #define GRAPH_FALSE false
 
-class graph {
-#define gcont std::list<int>  // defining graph container type
+#define gcont std::vector<int>  // defining graph container type
 #define vmark int  // defining vertex mark type
+
+class graph {
     int num_vertices;
     gcont *adj_matrix;
 
@@ -38,6 +39,8 @@ class graph {
 
     vmark addEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex);
+    gcont getAdjList(vmark vertex);
+
     bool isConnected(vmark begin, vmark end);
     bool isValidVertex(vmark vertex);
 };
@@ -80,6 +83,14 @@ vmark graph::getDegree(vmark vertex) {
     }
 
     return GRAPH_ERROR;
+}
+
+gcont graph::getAdjList(vmark vertex) {
+    if (isValidVertex(vertex)) {
+        return adj_matrix[vertex];
+    }
+    gcont ret;
+    return ret;
 }
 
 bool graph::isConnected(vmark begin, vmark end) {
