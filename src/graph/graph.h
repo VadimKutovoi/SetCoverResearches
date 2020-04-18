@@ -9,7 +9,7 @@
 #endif
 #include <algorithm>
 
-#define GRAPH_ERROR 1
+#define GRAPH_ERROR -1
 #define GRAPH_SUCCESS 0
 
 class graph {
@@ -31,17 +31,18 @@ class graph {
     }
 
     int addEdge(int begin, int end);
+    int getDegree(int vertex);
     bool isConnected(int begin, int end);
 };
 
 int graph::addEdge(int begin, int end) {
-    if (begin > num_vertices - 1) {
+    if (begin > num_vertices - 1 || begin < 0) {
 #ifdef GRAPH_ENABLE_VERBOSE
         std::cout << "Error::graph::addEdge() " << "edge "\
                   << begin << " doesn't exists" << std::endl;
 #endif
         return GRAPH_ERROR;
-    } else if (end > num_vertices - 1) {
+    } else if (end > num_vertices - 1 || end < 0) {
 #ifdef GRAPH_ENABLE_VERBOSE
         std::cout << "Error::graph::addEdge() " << "edge "\
                   << end << " doesn't exists" << std::endl;
@@ -74,6 +75,14 @@ bool graph::isConnected(int begin, int end) {
         return true;
     }
     return false;
+}
+
+int graph::getDegree(int vertex) {
+    if (vertex > num_vertices - 1 || vertex < 0) {
+        return GRAPH_ERROR;
+    }
+
+    return adj_matrix[vertex].size();
 }
 
 #endif  // SRC_GRAPH_GRAPH_H_
