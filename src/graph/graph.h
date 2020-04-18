@@ -81,12 +81,14 @@ bool graph::isConnected(int begin, int end) {
     return false;
 }
 
-int graph::getDegree(int vertex) {
+vmark graph::getDegree(int vertex) {
     if (vertex > num_vertices - 1 || vertex < 0) {
         return GRAPH_ERROR;
     }
 
     return adj_matrix[vertex].size();
 }
+
+
 
 #endif  // SRC_GRAPH_GRAPH_H_
