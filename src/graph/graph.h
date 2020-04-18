@@ -11,6 +11,8 @@
 
 #define GRAPH_ERROR -1
 #define GRAPH_SUCCESS 0
+#define GRAPH_TRUE true
+#define GRAPH_FALSE false
 
 class graph {
 #define gcont std::list<int>  // defining graph container type
@@ -37,16 +39,17 @@ class graph {
     vmark addEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex);
     bool isConnected(vmark begin, vmark end);
+    bool isValidVertex(vmark vertex);
 };
 
-int graph::addEdge(int begin, int end) {
-    if (begin > num_vertices - 1 || begin < 0) {
+int graph::addEdge(vmark begin, vmark end) {
+    if (!isValidVertex(begin)) {
 #ifdef GRAPH_ENABLE_VERBOSE
         std::cout << "Error::graph::addEdge() " << "edge "\
                   << begin << " doesn't exists" << std::endl;
 #endif
         return GRAPH_ERROR;
-    } else if (end > num_vertices - 1 || end < 0) {
+    } else if (!isValidVertex(end)) {
 #ifdef GRAPH_ENABLE_VERBOSE
         std::cout << "Error::graph::addEdge() " << "edge "\
                   << end << " doesn't exists" << std::endl;
@@ -71,7 +74,15 @@ int graph::addEdge(int begin, int end) {
     return GRAPH_SUCCESS;
 }
 
-bool graph::isConnected(int begin, int end) {
+vmark graph::getDegree(vmark vertex) {
+    if (isValidVertex(vertex)) {
+        return adj_matrix[vertex].size();
+    }
+
+    return GRAPH_ERROR;
+}
+
+bool graph::isConnected(vmark begin, vmark end) {
     if (std::find(adj_matrix[begin].begin(), \
                   adj_matrix[begin].end(), end) != adj_matrix[begin].end() && \
         std::find(adj_matrix[end].begin(), \
@@ -81,14 +92,11 @@ bool graph::isConnected(int begin, int end) {
     return false;
 }
 
-vmark graph::getDegree(int vertex) {
+bool graph::isValidVertex(vmark vertex) {
     if (vertex > num_vertices - 1 || vertex < 0) {
-        return GRAPH_ERROR;
+        return GRAPH_FALSE;
     }
-
-    return adj_matrix[vertex].size();
+    return GRAPH_TRUE;
 }
-
-
 
 #endif  // SRC_GRAPH_GRAPH_H_
