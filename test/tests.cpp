@@ -40,6 +40,13 @@ TEST(GraphTest, CanRemoveEdge) {
     EXPECT_FALSE(g.isConnected(0, 1));
 }
 
+TEST(GraphTest, CantRemoveNonExistingEdge) {
+    graph g(3);
+    g.addEdge(0, 1);
+
+    EXPECT_EQ(g.removeEdge(0, 2), GRAPH_ERROR);
+}
+
 TEST(GraphTest, ReturnsRightDegree) {
     int expected_degree = 2;
     graph g(expected_degree + 1);
