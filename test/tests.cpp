@@ -58,6 +58,18 @@ TEST(GraphTest, GetAdjListIsCorrect) {
     EXPECT_EQ(g.getAdjList(0)[0], 1);
 }
 
+TEST(GraphTest, GetAdjListHasExpectedOrdering) {
+    graph g(4);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(0, 3);
+
+    EXPECT_EQ(g.getAdjList(0)[0], 1);
+    EXPECT_EQ(g.getAdjList(0)[1], 2);
+    EXPECT_EQ(g.getAdjList(0)[2], 3);
+}
+
 TEST(GraphTest, ValidVertexIsValid) {
     graph g(1);
     EXPECT_TRUE(g.isValidVertex(0));
