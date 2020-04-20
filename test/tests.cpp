@@ -87,7 +87,7 @@ TEST(GraphTest, InvalidVertexIsInvalid) {
     EXPECT_FALSE(g.isValidVertex(2));
 }
 
-TEST(VertexCoverTest, Greedy) {
+TEST(VertexCoverTest, Simple) {
     graph g(7);
 
     g.addEdge(0, 1);

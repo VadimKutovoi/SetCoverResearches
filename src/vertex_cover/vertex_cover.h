@@ -5,7 +5,7 @@
 #ifndef SRC_VERTEX_COVER_VERTEX_COVER_H_
 #define SRC_VERTEX_COVER_VERTEX_COVER_H_
 
-gcont vertexCoverGreedy(const graph *g) {
+gcont vertexCoverSimple(const graph *g) {
     vmark vert_num = g->getVertNum();
 
     bool *is_visited = new bool[vert_num];
