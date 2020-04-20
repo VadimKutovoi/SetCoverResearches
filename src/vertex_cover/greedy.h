@@ -5,17 +5,17 @@
 #ifndef SRC_VERTEX_COVER_GREEDY_H_
 #define SRC_VERTEX_COVER_GREEDY_H_
 
-gcont vertexCoverGreedy(graph g) {
-    vmark vert_num = g.getVertNum();
+gcont vertexCoverGreedy(const graph *g) {
+    vmark vert_num = g->getVertNum();
 
     bool *is_visited = new bool[vert_num];
     for (int i = 0; i < vert_num; i++)
         is_visited[i] = false;
 
-    for (int j = 0; j < g.getVertNum(); j++) {
+    for (int j = 0; j < g->getVertNum(); j++) {
         if (!is_visited[j]) {
             // expecting gcont is std container
-            gcont adj = g.getAdjList(j);
+            gcont adj = g->getAdjList(j);
             for (auto it = adj.begin(); it != adj.end(); it++) {
                 vmark adj_vert = *it;
                 if (!is_visited[adj_vert]) {

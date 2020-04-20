@@ -97,7 +97,7 @@ TEST(VertexCoverTest, Greedy) {
     g.addEdge(4, 5);
     g.addEdge(5, 6);
 
-    gcont vertex_cover = vertexCoverGreedy(g);
+    gcont vertex_cover = vertexCoverGreedy(&g);
 
     EXPECT_EQ(vertex_cover[0], 0);
     EXPECT_EQ(vertex_cover[1], 1);
