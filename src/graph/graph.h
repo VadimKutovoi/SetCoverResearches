@@ -4,10 +4,10 @@
 #define SRC_GRAPH_GRAPH_H_
 
 #include <vector>
+#include <algorithm>
 #ifdef GRAPH_ENABLE_VERBOSE
 #include <iostream>
 #endif
-#include <algorithm>
 
 #define GRAPH_ERROR -1
 #define GRAPH_SUCCESS 0
