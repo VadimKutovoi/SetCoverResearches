@@ -32,8 +32,8 @@ class graph {
                 adj_num[i] = 0;
         } catch(std::bad_alloc& ex) {
 #ifdef GRAPH_ENABLE_VERBOSE
-            std::cout << "Error::" +
-                         "graph::graph() can't allocate memory for graph"\
+            std::cout << "Error::\
+                         graph::graph() can't allocate memory for graph"\
                       << std::endl;
 #endif
             throw ex;
@@ -46,6 +46,7 @@ class graph {
     }
 
     vmark addEdge(vmark begin, vmark end);
+    vmark removeEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex) const;
     vmark getVertNum() const;
     vmark getAdjNum(vmark vertex) const;
@@ -70,23 +71,49 @@ int graph::addEdge(vmark begin, vmark end) {
         return GRAPH_ERROR;
     }
 
-    if (std::find(adj_matrix[begin].begin(), \
-                  adj_matrix[begin].end(), end) != adj_matrix[begin].end() || \
-        std::find(adj_matrix[end].begin(),
-                  adj_matrix[end].end(), begin) != adj_matrix[end].end()) {
-#ifdef GRAPH_ENABLE_VERBOSE
-        std::cout << "Error::graph::addEdge() " << "edge "\
-                  << begin << "-" << end << " already exists" << std::endl;
-#endif
-        return GRAPH_ERROR;
-    }
-
     adj_matrix[begin].push_back(end);
     adj_matrix[end].push_back(begin);
     adj_num[begin]++;
     adj_num[end]++;
 
     return GRAPH_SUCCESS;
+}
+
+int graph::removeEdge(vmark begin, vmark end) {
+    if (!isValidVertex(begin)) {
+#ifdef GRAPH_ENABLE_VERBOSE
+        std::cout << "Error::graph::addEdge() " << "edge "\
+                  << begin << " doesn't exists" << std::endl;
+#endif
+        return GRAPH_ERROR;
+    } else if (!isValidVertex(end)) {
+#ifdef GRAPH_ENABLE_VERBOSE
+        std::cout << "Error::graph::addEdge() " << "edge "\
+                  << end << " doesn't exists" << std::endl;
+#endif
+        return GRAPH_ERROR;
+    }
+
+    auto itend = std::find(adj_matrix[begin].begin(),
+                         adj_matrix[begin].end(), end);
+    auto itbegin = std::find(adj_matrix[end].begin(),
+                         adj_matrix[end].end(), begin);
+
+    if (itend != adj_matrix[begin].end() && itbegin != adj_matrix[end].end()) {
+        adj_matrix[begin].erase(itend);
+        adj_matrix[end].erase(itbegin);
+
+        adj_num[begin]--;
+        adj_num[end]--;
+
+        return GRAPH_SUCCESS;
+    }
+#ifdef GRAPH_ENABLE_VERBOSE
+    std::cout << "Error::graph::addEdge() " << "edge "\
+              << begin << "-" << end << " doesn't exists" << std::endl;
+#endif
+
+    return GRAPH_ERROR;
 }
 
 vmark graph::getDegree(vmark vertex) const {

@@ -27,8 +27,17 @@ TEST(GraphTest, ExistingVertIsConnected) {
 
 TEST(GraphTest, NonExistingVertIsNotConnected) {
     graph g(2);
+
+    EXPECT_FALSE(g.isConnected(0, 1));
+}
+
+TEST(GraphTest, CanRemoveEdge) {
+    graph g(3);
     g.addEdge(0, 1);
-    EXPECT_TRUE(g.isConnected(0, 1));
+    g.addEdge(0, 2);
+    g.removeEdge(0, 1);
+
+    EXPECT_FALSE(g.isConnected(0, 1));
 }
 
 TEST(GraphTest, ReturnsRightDegree) {
