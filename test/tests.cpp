@@ -1,6 +1,7 @@
 // Copyright 2020 Vadim Kutovoi
 
 #include "../src/graph/graph.h"
+#include "../src/vertex_cover/greedy.h"
 #include <gtest/gtest.h>
 
 TEST(GraphTest, CanAddEdge) {
@@ -70,6 +71,12 @@ TEST(GraphTest, GetAdjListHasExpectedOrdering) {
     EXPECT_EQ(g.getAdjList(0)[2], 3);
 }
 
+TEST(GraphTest, CanGetNumVertices) {
+    graph g(5);
+
+    EXPECT_EQ(g.getVertNum(), 5);
+}
+
 TEST(GraphTest, ValidVertexIsValid) {
     graph g(1);
     EXPECT_TRUE(g.isValidVertex(0));
@@ -78,6 +85,26 @@ TEST(GraphTest, ValidVertexIsValid) {
 TEST(GraphTest, InvalidVertexIsInvalid) {
     graph g(1);
     EXPECT_FALSE(g.isValidVertex(2));
+}
+
+TEST(VertexCoverTest, Greedy) {
+    graph g(7);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 3);
+    g.addEdge(3, 4);
+    g.addEdge(4, 5);
+    g.addEdge(5, 6);
+
+    gcont vertex_cover = vertexCoverGreedy(g);
+
+    EXPECT_EQ(vertex_cover[0], 0);
+    EXPECT_EQ(vertex_cover[1], 1);
+    EXPECT_EQ(vertex_cover[2], 3);
+    EXPECT_EQ(vertex_cover[3], 4);
+    EXPECT_EQ(vertex_cover[4], 5);
+    EXPECT_EQ(vertex_cover[5], 6);
 }
 
 int main(int argc, char **argv) {
