@@ -14,15 +14,15 @@
 #define GRAPH_TRUE true
 #define GRAPH_FALSE false
 
-#define gcont std::vector<int>  // defining graph container type
 #define vmark int  // defining vertex mark type
+#define gcont std::vector<vmark>  // defining graph container type
 
 class graph {
-    int num_vertices;
+    vmark num_vertices;
     gcont *adj_matrix;
 
  public:
-    explicit graph(int _num_vertices) : num_vertices(_num_vertices) {
+    explicit graph(vmark _num_vertices) : num_vertices(_num_vertices) {
         try {
             adj_matrix = new gcont[_num_vertices];
         } catch(std::bad_alloc& ex) {
