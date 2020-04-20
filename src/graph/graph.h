@@ -27,9 +27,11 @@ class graph {
             adj_matrix = new gcont[_num_vertices];
         } catch(std::bad_alloc& ex) {
 #ifdef GRAPH_ENABLE_VERBOSE
-            std::cout << "Error::graph::graph() can't allocate memory for graph"\
+            std::cout << "Error::" +
+                         "graph::graph() can't allocate memory for graph"\
                       << std::endl;
 #endif
+            throw ex;
         }
     }
 
@@ -39,6 +41,7 @@ class graph {
 
     vmark addEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex);
+    vmark getVertNum();
     gcont getAdjList(vmark vertex);
 
     bool isConnected(vmark begin, vmark end);
@@ -91,6 +94,10 @@ gcont graph::getAdjList(vmark vertex) {
     }
     gcont ret;
     return ret;
+}
+
+vmark graph::getVertNum() {
+    return this->num_vertices;
 }
 
 bool graph::isConnected(vmark begin, vmark end) {
