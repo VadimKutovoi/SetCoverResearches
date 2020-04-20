@@ -40,12 +40,12 @@ class graph {
     }
 
     vmark addEdge(vmark begin, vmark end);
-    vmark getDegree(vmark vertex);
-    vmark getVertNum();
-    gcont getAdjList(vmark vertex);
+    vmark getDegree(vmark vertex) const;
+    vmark getVertNum() const;
+    gcont getAdjList(vmark vertex) const;
 
-    bool isConnected(vmark begin, vmark end);
-    bool isValidVertex(vmark vertex);
+    bool isConnected(vmark begin, vmark end) const;
+    bool isValidVertex(vmark vertex) const;
 };
 
 int graph::addEdge(vmark begin, vmark end) {
@@ -80,7 +80,7 @@ int graph::addEdge(vmark begin, vmark end) {
     return GRAPH_SUCCESS;
 }
 
-vmark graph::getDegree(vmark vertex) {
+vmark graph::getDegree(vmark vertex) const {
     if (isValidVertex(vertex)) {
         return adj_matrix[vertex].size();
     }
@@ -88,7 +88,7 @@ vmark graph::getDegree(vmark vertex) {
     return GRAPH_ERROR;
 }
 
-gcont graph::getAdjList(vmark vertex) {
+gcont graph::getAdjList(vmark vertex) const {
     if (isValidVertex(vertex)) {
         return adj_matrix[vertex];
     }
@@ -96,11 +96,11 @@ gcont graph::getAdjList(vmark vertex) {
     return ret;
 }
 
-vmark graph::getVertNum() {
+vmark graph::getVertNum() const {
     return this->num_vertices;
 }
 
-bool graph::isConnected(vmark begin, vmark end) {
+bool graph::isConnected(vmark begin, vmark end) const {
     if (std::find(adj_matrix[begin].begin(), \
                   adj_matrix[begin].end(), end) != adj_matrix[begin].end() && \
         std::find(adj_matrix[end].begin(), \
@@ -110,7 +110,7 @@ bool graph::isConnected(vmark begin, vmark end) {
     return false;
 }
 
-bool graph::isValidVertex(vmark vertex) {
+bool graph::isValidVertex(vmark vertex) const {
     if (vertex > num_vertices - 1 || vertex < 0) {
         return GRAPH_FALSE;
     }
