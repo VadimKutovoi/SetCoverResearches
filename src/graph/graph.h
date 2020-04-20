@@ -19,12 +19,17 @@
 
 class graph {
     vmark num_vertices;
+    vmark *adj_num;
     gcont *adj_matrix;
 
  public:
     explicit graph(vmark _num_vertices) : num_vertices(_num_vertices) {
         try {
             adj_matrix = new gcont[_num_vertices];
+            adj_num = new vmark[_num_vertices];
+
+            for (int i = 0; i < _num_vertices; i++)
+                adj_num[i] = 0;
         } catch(std::bad_alloc& ex) {
 #ifdef GRAPH_ENABLE_VERBOSE
             std::cout << "Error::" +
@@ -37,11 +42,13 @@ class graph {
 
     ~graph() {
         delete[] adj_matrix;
+        delete[] adj_num;
     }
 
     vmark addEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex) const;
     vmark getVertNum() const;
+    vmark getAdjNum(vmark vertex) const;
     gcont getAdjList(vmark vertex) const;
 
     bool isConnected(vmark begin, vmark end) const;
@@ -76,6 +83,8 @@ int graph::addEdge(vmark begin, vmark end) {
 
     adj_matrix[begin].push_back(end);
     adj_matrix[end].push_back(begin);
+    adj_num[begin]++;
+    adj_num[end]++;
 
     return GRAPH_SUCCESS;
 }
@@ -94,6 +103,13 @@ gcont graph::getAdjList(vmark vertex) const {
     }
     gcont ret;
     return ret;
+}
+
+vmark graph::getAdjNum(vmark vertex) const {
+    if (isValidVertex(vertex)) {
+        return adj_num[vertex];
+    }
+    return GRAPH_ERROR;
 }
 
 vmark graph::getVertNum() const {

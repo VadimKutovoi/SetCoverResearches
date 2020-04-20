@@ -51,6 +51,17 @@ TEST(GraphTest, getDegreeReturnsErrorIfVertNegative) {
     EXPECT_EQ(g.getDegree(-1), GRAPH_ERROR);
 }
 
+TEST(GraphTest, GetAdjNumIsCorrect) {
+    graph g(3);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+
+    EXPECT_EQ(g.getAdjNum(0), 2);
+    EXPECT_EQ(g.getAdjNum(1), 1);
+    EXPECT_EQ(g.getAdjNum(2), 1);
+}
+
 TEST(GraphTest, GetAdjListIsCorrect) {
     graph g(2);
 
