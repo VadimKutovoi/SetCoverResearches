@@ -1,7 +1,7 @@
 // Copyright 2020 Vadim Kutovoi
 
 #include "../src/graph/graph.h"
-#include "../src/vertex_cover/greedy.h"
+#include "../src/vertex_cover/vertex_cover.h"
 #include <gtest/gtest.h>
 
 TEST(GraphTest, CanAddEdge) {

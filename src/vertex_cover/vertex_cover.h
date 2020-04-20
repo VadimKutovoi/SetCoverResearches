@@ -2,8 +2,8 @@
 
 #include "../graph/graph.h"
 
-#ifndef SRC_VERTEX_COVER_GREEDY_H_
-#define SRC_VERTEX_COVER_GREEDY_H_
+#ifndef SRC_VERTEX_COVER_VERTEX_COVER_H_
+#define SRC_VERTEX_COVER_VERTEX_COVER_H_
 
 gcont vertexCoverGreedy(const graph *g) {
     vmark vert_num = g->getVertNum();
@@ -39,4 +39,4 @@ gcont vertexCoverGreedy(const graph *g) {
     return vertex_cover;
 }
 
-#endif  // SRC_VERTEX_COVER_GREEDY_H_
+#endif  // SRC_VERTEX_COVER_VERTEX_COVER_H_
