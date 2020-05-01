@@ -47,6 +47,15 @@ TEST(GraphTest, CantRemoveNonExistingEdge) {
     EXPECT_EQ(g.removeEdge(0, 2), GRAPH_ERROR);
 }
 
+TEST(GraphTest, RemoveIsBidirectional) {
+    graph g(2);
+    g.addEdge(0, 1);
+    g.removeEdge(1, 0);
+
+    EXPECT_EQ(g.getAdjNum(1) , 0);
+    EXPECT_EQ(g.getAdjNum(0) , 0);
+}
+
 TEST(GraphTest, ReturnsRightDegree) {
     int expected_degree = 2;
     graph g(expected_degree + 1);
@@ -68,7 +77,7 @@ TEST(GraphTest, getDegreeReturnsErrorIfVertNegative) {
 }
 
 TEST(GraphTest, GetAdjNumIsCorrect) {
-    graph g(3);
+    graph g(4);
 
     g.addEdge(0, 1);
     g.addEdge(0, 2);
@@ -76,6 +85,24 @@ TEST(GraphTest, GetAdjNumIsCorrect) {
     EXPECT_EQ(g.getAdjNum(0), 2);
     EXPECT_EQ(g.getAdjNum(1), 1);
     EXPECT_EQ(g.getAdjNum(2), 1);
+    EXPECT_EQ(g.getAdjNum(3), 0);
+}
+
+TEST(GraphTest, GetAdjNumIsCorrectAfterRemovingAllEdges) {
+    graph g(4);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(0, 3);
+
+    g.removeEdge(0, 1);
+    g.removeEdge(0, 2);
+    g.removeEdge(0, 3);
+
+    EXPECT_EQ(g.getAdjNum(0), 0);
+    EXPECT_EQ(g.getAdjNum(1), 0);
+    EXPECT_EQ(g.getAdjNum(2), 0);
+    EXPECT_EQ(g.getAdjNum(2), 0);
 }
 
 TEST(GraphTest, GetAdjListIsCorrect) {
@@ -114,38 +141,62 @@ TEST(GraphTest, InvalidVertexIsInvalid) {
     EXPECT_FALSE(g.isValidVertex(2));
 }
 
-TEST(VertexCoverTest, Simple) {
-    graph g(7);
+TEST(VertexCoverTest, vertexCoverTwoApproximate) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
 
     g.addEdge(0, 1);
+    g.addEdge(0, 2);
     g.addEdge(1, 2);
-    g.addEdge(1, 3);
-    g.addEdge(3, 4);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
     g.addEdge(4, 5);
-    g.addEdge(5, 6);
 
-    gcont vertex_cover = vertexCoverSimple(&g);
+    gcont vertex_cover = vertexCoverTwoApproximate(&g);
 
     EXPECT_EQ(vertex_cover[0], 0);
-    EXPECT_EQ(vertex_cover[1], 2);
-    EXPECT_EQ(vertex_cover[2], 3);
-    EXPECT_EQ(vertex_cover[3], 5);
+    EXPECT_EQ(vertex_cover[1], 1);
+    EXPECT_EQ(vertex_cover[2], 2);
+    EXPECT_EQ(vertex_cover[3], 3);
+    EXPECT_EQ(vertex_cover[4], 4);
+    EXPECT_EQ(vertex_cover[5], 5);
 }
 
+
 TEST(VertexCoverTest, Greedy) {
-    graph g(7);
+    graph g(6);
+    graph *gptr = &g;
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
 
     g.addEdge(0, 1);
+    g.addEdge(0, 2);
     g.addEdge(1, 2);
     g.addEdge(1, 3);
-    g.addEdge(3, 4);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
     g.addEdge(4, 5);
-    g.addEdge(5, 6);
 
-    gcont vertex_cover = vertexCoverGreedy(&g);
+    gcont vertex_cover = vertexCoverGreedy(gptr);
 
-    EXPECT_EQ(vertex_cover[0], 1);
-    EXPECT_EQ(vertex_cover[1], 5);
+    EXPECT_EQ(vertex_cover[0], 2);
+    EXPECT_EQ(vertex_cover[1], 1);
+    EXPECT_EQ(vertex_cover[2], 5);
 }
 
 int main(int argc, char **argv) {

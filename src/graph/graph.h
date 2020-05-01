@@ -82,13 +82,13 @@ int graph::addEdge(vmark begin, vmark end) {
 int graph::removeEdge(vmark begin, vmark end) {
     if (!isValidVertex(begin)) {
 #ifdef GRAPH_ENABLE_VERBOSE
-        std::cout << "Error::graph::addEdge() " << "edge "\
+        std::cout << "Error::graph::removeEdge() " << "edge "\
                   << begin << " doesn't exists" << std::endl;
 #endif
         return GRAPH_ERROR;
     } else if (!isValidVertex(end)) {
 #ifdef GRAPH_ENABLE_VERBOSE
-        std::cout << "Error::graph::addEdge() " << "edge "\
+        std::cout << "Error::graph::removeEdge() " << "edge "\
                   << end << " doesn't exists" << std::endl;
 #endif
         return GRAPH_ERROR;
@@ -108,8 +108,9 @@ int graph::removeEdge(vmark begin, vmark end) {
 
         return GRAPH_SUCCESS;
     }
+
 #ifdef GRAPH_ENABLE_VERBOSE
-    std::cout << "Error::graph::addEdge() " << "edge "\
+    std::cout << "Error::graph::removeEdge() " << "edge "\
               << begin << "-" << end << " doesn't exists" << std::endl;
 #endif
 
