@@ -57,6 +57,7 @@ class graph {
 };
 
 int graph::addEdge(vmark begin, vmark end) {
+#ifndef GRAPH_DISABLE_CHECK
     if (!isValidVertex(begin)) {
 #ifdef GRAPH_ENABLE_VERBOSE
         std::cout << "Error::graph::addEdge() " << "edge "\
@@ -70,6 +71,7 @@ int graph::addEdge(vmark begin, vmark end) {
 #endif
         return GRAPH_ERROR;
     }
+#endif
 
     adj_matrix[begin].push_back(end);
     adj_matrix[end].push_back(begin);
@@ -80,6 +82,7 @@ int graph::addEdge(vmark begin, vmark end) {
 }
 
 int graph::removeEdge(vmark begin, vmark end) {
+#ifndef GRAPH_DISABLE_CHECK
     if (!isValidVertex(begin)) {
 #ifdef GRAPH_ENABLE_VERBOSE
         std::cout << "Error::graph::removeEdge() " << "edge "\
@@ -93,6 +96,7 @@ int graph::removeEdge(vmark begin, vmark end) {
 #endif
         return GRAPH_ERROR;
     }
+#endif
 
     auto itend = std::find(adj_matrix[begin].begin(),
                          adj_matrix[begin].end(), end);

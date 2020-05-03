@@ -2,7 +2,6 @@
 
 #include <utility>
 
-
 #include "../graph/graph.h"
 
 #ifndef SRC_VERTEX_COVER_VERTEX_COVER_H_
