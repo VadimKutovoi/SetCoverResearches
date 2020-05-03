@@ -41,20 +41,20 @@ gcont vertexCoverTwoApproximate(const graph *g) {
 gcont vertexCoverGreedy(graph *g) {
     vmark vert_num = g->getVertNum();
     gcont vert_cover;
+    vmark max_weight = -1;
+    vmark curr_vert = -1;
 
-    std::vector<std::pair<vmark, vmark>>::iterator max_vert;
     while (true) {
-        std::vector<std::pair<vmark, vmark>> vert_weight;
         for (int i = 0; i < vert_num; i++) {
-            vert_weight.push_back(std::make_pair(g->getAdjNum(i), i));
+            auto adj_num = g->getAdjNum(i);
+            if (adj_num > max_weight) {
+                max_weight = adj_num;
+                curr_vert = i;
+            }
         }
 
-        max_vert = std::max_element(vert_weight.begin(), vert_weight.end());
+        if (max_weight == 0) break;
 
-        if (max_vert->first == 0)
-            break;
-
-        vmark curr_vert = max_vert->second;
         vert_cover.push_back(curr_vert);
 
         gcont adj = g->getAdjList(curr_vert);
@@ -63,9 +63,8 @@ gcont vertexCoverGreedy(graph *g) {
             auto err = g->removeEdge(curr_vert, adj_vert);
         }
 
-        vert_weight.erase(max_vert);
+        max_weight = -1;
     }
-
     return vert_cover;
 }
 
