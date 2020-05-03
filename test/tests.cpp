@@ -196,7 +196,7 @@ TEST(VertexCoverTest, Greedy) {
 
     EXPECT_EQ(vertex_cover[0], 2);
     EXPECT_EQ(vertex_cover[1], 1);
-    EXPECT_EQ(vertex_cover[2], 5);
+    EXPECT_EQ(vertex_cover[2], 4);
 }
 
 int main(int argc, char **argv) {
