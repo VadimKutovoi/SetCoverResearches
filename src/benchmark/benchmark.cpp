@@ -7,6 +7,7 @@
 
 #define GRAPH_SIZE 30
 #define GRAPH_VERTEX_CONN_PROBABILITY 0.1
+#define GRAPH_VERTEX_MAX_WEIGHT_RATIO 1.5 // 
 
 // 1 - graph size, 2 - probability
 int main(int argc, char **argv) {
@@ -31,10 +32,12 @@ int main(int argc, char **argv) {
 
     std::ofstream adj_list_file;
     std::ofstream cover_list_twoapprox_file;
+    std::ofstream cover_list_primal_dual_file;
     std::ofstream cover_list_greedy_file;
 
     adj_list_file.open("adj_list.txt");
     cover_list_twoapprox_file.open("cover_list_twoapprox.txt");
+    cover_list_primal_dual_file.open("cover_list_primal_dual.txt");
     cover_list_greedy_file.open("cover_list_greedy.txt");
 
     graph g(graph_size);
@@ -70,6 +73,20 @@ int main(int argc, char **argv) {
 
     std::cout << "Cheking what all vertices has eges... Done!" << std::endl;
 
+    std::cout << "Generating vertex weights..." << std::endl;
+
+    vmark max_weight = graph_size * GRAPH_VERTEX_MAX_WEIGHT_RATIO;
+    std::random_device rdmw;
+    std::mt19937 emw(rdmw());
+    std::uniform_real_distribution <> distmw(1, max_weight);
+
+    for (auto i = 0; i < graph_size; i++) {
+        vmark weight = static_cast<int>(distmw(emw));
+        g.setVertWeight(i, weight);
+    }
+
+    std::cout << "Generating vertex weights... Done!" << std::endl;
+
     std::cout << "Calculating graph metrics..." << std::endl;
 
     int num_of_edges = 0;
@@ -80,6 +97,15 @@ int main(int argc, char **argv) {
     auto avg_num_of_edges = num_of_edges/graph_size;
     std::cout << "Average num of edges is " \
               << avg_num_of_edges << std::endl;
+
+    int total_weight = 0;
+    for (auto i = 0; i < graph_size; i++) {
+        total_weight += g.getVertWeight(i);
+    }
+
+    auto avg_weight = total_weight/graph_size;
+    std::cout << "Average weight of vertex is " \
+              << avg_weight << std::endl;
 
     for (auto i = 0; i < graph_size; i++) {
         gcont adj_list = g.getAdjList(i);
@@ -94,6 +120,8 @@ int main(int argc, char **argv) {
 
     std::cout << "Generating graph... Done!" << std::endl;
 
+    // TWO APPROXIMATE
+
     std::cout << "vertexCoverTwoApproximate..." << std::endl;
 
     begin = std::chrono::steady_clock::now();
@@ -101,20 +129,62 @@ int main(int argc, char **argv) {
     end = std::chrono::steady_clock::now();
 
     std::cout << "vertexCoverTwoApproximate... Done! " << "Time = " \
-              << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+              << std::chrono::duration_cast<std::chrono::\
+              milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
-    for (auto it = vertexCoverTwo.begin(); it != vertexCoverTwo.end(); it++) {
-        cover_list_twoapprox_file << *it << " ";
+    vmark TwoApproxSolWeight = 0;
+    for (const vmark &it : vertexCoverTwo) {
+        cover_list_twoapprox_file << it << " ";
+        TwoApproxSolWeight += g.getVertWeight(it);
     }
+    std::cout << "Two approximate solution weight is " \
+              << TwoApproxSolWeight << std::endl;
 
-    int TwoApproximateCoverSize = vertexCoverTwo.size();
+
+    int TwoAppCoverSize = vertexCoverTwo.size();
     std::cout << "vertexCoverTwoApproximate size is " \
-              << TwoApproximateCoverSize << std::endl;
+              << TwoAppCoverSize << std::endl;
 
-    float TwoApproximateReductionRatio = float(TwoApproximateCoverSize)/float(graph_size);
+    float TwoApprReductionRatio = \
+                    static_cast<float>(TwoAppCoverSize)/graph_size;
 
     std::cout << "vertexCoverTwoApproximate reduction rate is " \
-              << TwoApproximateReductionRatio << std::endl;
+              << TwoApprReductionRatio << std::endl;
+
+    // TWO APPROXIMATE END
+
+    // PRIMAL-DUAL
+
+    begin = std::chrono::steady_clock::now();
+    gcont vertexPrimalDual = vertexCoverPrimalDual(&g);
+    end = std::chrono::steady_clock::now();
+
+    std::cout << "vertexCoverPrimalDual... Done! " << "Time = " \
+              << std::chrono::duration_cast<std::chrono::\
+              milliseconds>(end - begin).count() << "[ms]" << std::endl;
+
+    vmark PrimalDualSolWeight = 0;
+    for (const vmark &it : vertexPrimalDual) {
+        cover_list_primal_dual_file << it << " ";
+        PrimalDualSolWeight += g.getVertWeight(it);
+    }
+
+    std::cout << "PrimalDual solution weight is " \
+              << PrimalDualSolWeight << std::endl;
+
+    int PrimalDualCoverSize = vertexPrimalDual.size();
+    std::cout << "vertexCoverPrimalDual size is " \
+              << PrimalDualCoverSize << std::endl;
+
+    float PrimalDualReductionRatio = \
+                    static_cast<float>(PrimalDualCoverSize)/graph_size;
+
+    std::cout << "vertexCoverPrimalDual reduction rate is " \
+              << PrimalDualReductionRatio << std::endl;
+
+    // PRIMAL-DUAL END
+
+    // GREEDY
 
     graph *gptr = &g;
 
@@ -125,20 +195,30 @@ int main(int argc, char **argv) {
     end = std::chrono::steady_clock::now();
 
     std::cout << "vertexCoverGreedy... Done! " << "Time = " \
-              << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+              << std::chrono::\
+              duration_cast<std::chrono::milliseconds>\
+              (end - begin).count() << "[ms]" << std::endl;
 
-    for (auto it = CoverGreedy.begin(); it != CoverGreedy.end(); it++) {
-        cover_list_greedy_file << *it << " ";
+    vmark GreedySolWeight = 0;
+    for (const vmark &it : CoverGreedy) {
+        cover_list_greedy_file << it << " ";
+        GreedySolWeight += g.getVertWeight(it);
     }
+
+    std::cout << "Greedy solution weight is " \
+              << GreedySolWeight << std::endl;
 
     int GreedyCoverSize = CoverGreedy.size();
     std::cout << "GreedyCoverSize size is " \
               << GreedyCoverSize << std::endl;
 
-    float GreedyCoverReductionRatio = float(GreedyCoverSize)/float(graph_size);
+    float GreedyCoverReductionRatio = \
+                    static_cast<float>(GreedyCoverSize)/graph_size;
 
     std::cout << "vertexCoverGreedy reduction rate is " \
               << GreedyCoverReductionRatio << std::endl;
+
+    // GREEDY END
 
     std::cout << "Done!" << std::endl;
 

@@ -141,6 +141,17 @@ TEST(GraphTest, InvalidVertexIsInvalid) {
     EXPECT_FALSE(g.isValidVertex(2));
 }
 
+TEST(GraphTest, CanSetAndGetVertWeight) {
+    graph g(1);
+    g.setVertWeight(0, 10);
+    EXPECT_EQ(g.getVertWeight(0), 10);
+}
+
+TEST(GraphTest, UninitVertWeightIsOne) {
+    graph g(1);
+    EXPECT_EQ(g.getVertWeight(0), 1);
+}
+
 TEST(VertexCoverTest, vertexCoverTwoApproximate) {
     graph g(6);
 
@@ -198,6 +209,43 @@ TEST(VertexCoverTest, Greedy) {
     EXPECT_EQ(vertex_cover[1], 1);
     EXPECT_EQ(vertex_cover[2], 4);
 }
+
+TEST(VertexCoverTest, PrimalDual) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
+
+    g.setVertWeight(0, 5);
+    g.setVertWeight(1, 2);
+    g.setVertWeight(2, 7);
+    g.setVertWeight(3, 1);
+    g.setVertWeight(4, 10);
+    g.setVertWeight(5, 8);
+
+    gcont vertex_cover = vertexCoverPrimalDual(&g);
+
+    EXPECT_EQ(vertex_cover[0], 1);
+    EXPECT_EQ(vertex_cover[1], 0);
+    EXPECT_EQ(vertex_cover[2], 3);
+    EXPECT_EQ(vertex_cover[3], 2);
+    EXPECT_EQ(vertex_cover[4], 4);
+}
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

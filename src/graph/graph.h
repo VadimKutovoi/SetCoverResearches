@@ -20,6 +20,7 @@
 class graph {
     vmark num_vertices;
     vmark *adj_num;
+    vmark *vert_weight;
     gcont *adj_matrix;
 
  public:
@@ -27,9 +28,12 @@ class graph {
         try {
             adj_matrix = new gcont[_num_vertices];
             adj_num = new vmark[_num_vertices];
+            vert_weight = new vmark[_num_vertices];
 
-            for (int i = 0; i < _num_vertices; i++)
+            for (int i = 0; i < _num_vertices; i++) {
                 adj_num[i] = 0;
+                vert_weight[i] = 1;
+            }
         } catch(std::bad_alloc& ex) {
 #ifdef GRAPH_ENABLE_VERBOSE
             std::cout << "Error::\
@@ -41,6 +45,7 @@ class graph {
     }
 
     ~graph() {
+        delete[] vert_weight;
         delete[] adj_matrix;
         delete[] adj_num;
     }
@@ -49,6 +54,8 @@ class graph {
     vmark removeEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex) const;
     vmark getVertNum() const;
+    vmark setVertWeight(vmark vertex, vmark weight);
+    vmark getVertWeight(vmark vertex) const;
     vmark getAdjNum(vmark vertex) const;
     gcont getAdjList(vmark vertex) const;
 
@@ -146,6 +153,21 @@ vmark graph::getAdjNum(vmark vertex) const {
 
 vmark graph::getVertNum() const {
     return this->num_vertices;
+}
+
+vmark graph::setVertWeight(vmark vertex, vmark weight) {
+    if (isValidVertex(vertex)) {
+        this->vert_weight[vertex] = weight;
+        return GRAPH_SUCCESS;
+    }
+    return GRAPH_ERROR;
+}
+
+vmark graph::getVertWeight(vmark vertex) const {
+    if (isValidVertex(vertex)) {
+        return this->vert_weight[vertex];
+    }
+    return GRAPH_ERROR;
 }
 
 bool graph::isConnected(vmark begin, vmark end) const {
