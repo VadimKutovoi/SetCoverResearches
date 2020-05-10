@@ -31,11 +31,13 @@ int main(int argc, char **argv) {
     std::uniform_real_distribution <> dist(0, 100);
 
     std::ofstream adj_list_file;
+    std::ofstream vertex_weights;
     std::ofstream cover_list_twoapprox_file;
     std::ofstream cover_list_primal_dual_file;
     std::ofstream cover_list_greedy_file;
 
     adj_list_file.open("adj_list.txt");
+    vertex_weights.open("vertex_weights.txt");
     cover_list_twoapprox_file.open("cover_list_twoapprox.txt");
     cover_list_primal_dual_file.open("cover_list_primal_dual.txt");
     cover_list_greedy_file.open("cover_list_greedy.txt");
@@ -114,6 +116,11 @@ int main(int argc, char **argv) {
             adj_list_file << *it << " ";
         }
         adj_list_file << std::endl;
+    }
+
+    for (auto i = 0; i < graph_size; i++) {
+        vmark weight = g.getVertWeight(i);
+        vertex_weights << weight << " ";
     }
 
     std::cout << "Calculating graph metrics... Done!" << std::endl;
@@ -219,6 +226,11 @@ int main(int argc, char **argv) {
               << GreedyCoverReductionRatio << std::endl;
 
     // GREEDY END
+
+    adj_list_file.close();
+    cover_list_twoapprox_file.close();
+    cover_list_primal_dual_file.close();
+    cover_list_greedy_file.close();
 
     std::cout << "Done!" << std::endl;
 
