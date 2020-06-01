@@ -25,6 +25,7 @@ gcont vertexCoverTwoApproximate(const graph *g) {
                     is_visited[adj_vert] = true;
                     vert_cover.push_back(vert);
                     vert_cover.push_back(adj_vert);
+
                     break;
                 }
             }
