@@ -2,7 +2,7 @@
 
 #ifndef SRC_GRAPH_GRAPH_H_
 #define SRC_GRAPH_GRAPH_H_
-
+#define GRAPH_ENABLE_VERBOSE
 #include <vector>
 #include <algorithm>
 #ifdef GRAPH_ENABLE_VERBOSE
@@ -14,7 +14,9 @@
 #define GRAPH_TRUE true
 #define GRAPH_FALSE false
 
-#define vmark int  // defining vertex mark type
+#define gerror short
+#define gbool bool
+#define vmark unsigned int  // defining vertex mark type
 #define gcont std::vector<vmark>  // defining graph container type
 
 class graph {
@@ -44,14 +46,28 @@ class graph {
         }
     }
 
+    graph(const graph &g) : num_vertices(g.num_vertices) {
+        graph new_graph(num_vertices);
+
+        adj_matrix = new gcont[num_vertices];
+        adj_num = new vmark[num_vertices];
+        vert_weight = new vmark[num_vertices];
+
+        for (int i = 0; i < num_vertices; i++) {
+            adj_num[i] = g.adj_num[i];
+            vert_weight[i] = g.vert_weight[i];
+            adj_matrix[i] = g.adj_matrix[i];
+        }
+    }
+
     ~graph() {
         delete[] vert_weight;
         delete[] adj_matrix;
         delete[] adj_num;
     }
 
-    vmark addEdge(vmark begin, vmark end);
-    vmark removeEdge(vmark begin, vmark end);
+    gerror addEdge(vmark begin, vmark end);
+    gerror removeEdge(vmark begin, vmark end);
     vmark getDegree(vmark vertex) const;
     vmark getVertNum() const;
     vmark setVertWeight(vmark vertex, vmark weight);
@@ -63,7 +79,7 @@ class graph {
     bool isValidVertex(vmark vertex) const;
 };
 
-int graph::addEdge(vmark begin, vmark end) {
+gerror graph::addEdge(vmark begin, vmark end) {
 #ifndef GRAPH_DISABLE_CHECK
     if (!isValidVertex(begin)) {
 #ifdef GRAPH_ENABLE_VERBOSE
@@ -88,7 +104,7 @@ int graph::addEdge(vmark begin, vmark end) {
     return GRAPH_SUCCESS;
 }
 
-int graph::removeEdge(vmark begin, vmark end) {
+gerror graph::removeEdge(vmark begin, vmark end) {
 #ifndef GRAPH_DISABLE_CHECK
     if (!isValidVertex(begin)) {
 #ifdef GRAPH_ENABLE_VERBOSE
