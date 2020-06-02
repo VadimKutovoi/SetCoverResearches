@@ -3,9 +3,30 @@
 #ifndef SRC_GRAPH_GENERATORS_H_
 #define SRC_GRAPH_GENERATORS_H_
 
-#include "graph.h"
 #include <iostream>
 #include <cmath>
+#include <random>
+
+#include "./graph.h"
+
+
+graph generateProbGraph(vmark num_vertices, float probability) {
+    graph g(num_vertices);
+    std::random_device rd;
+    std::mt19937 e2(rd());
+    std::uniform_real_distribution <> dist(0, 100);
+
+    for (auto v1 = 0; v1 < num_vertices; v1++) {
+        for (auto v2 = 0; v2 < num_vertices; v2++) {
+            if (dist(e2) <= probability * 100 \
+                && i != j && !g.isConnected(i, j)) {
+                g.addEdge(i, j);
+            }
+        }
+    }
+
+    return g;
+}
 
 graph generateGridGraph(vmark width, vmark height) {
     vmark num_nodes = width * height;
