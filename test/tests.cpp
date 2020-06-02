@@ -1,6 +1,7 @@
 // Copyright 2020 Vadim Kutovoi
 
 #include "../src/graph/graph.h"
+#include "../src/graph/generators.h"
 #include "../src/vertex_cover/vertex_cover.h"
 #include <gtest/gtest.h>
 
@@ -77,15 +78,31 @@ TEST(GraphTest, getDegreeReturnsErrorIfVertNegative) {
 }
 
 TEST(GraphTest, GetAdjNumIsCorrect) {
-    graph g(4);
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
 
     g.addEdge(0, 1);
     g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
 
     EXPECT_EQ(g.getAdjNum(0), 2);
-    EXPECT_EQ(g.getAdjNum(1), 1);
-    EXPECT_EQ(g.getAdjNum(2), 1);
-    EXPECT_EQ(g.getAdjNum(3), 0);
+    EXPECT_EQ(g.getAdjNum(1), 3);
+    EXPECT_EQ(g.getAdjNum(2), 4);
+    EXPECT_EQ(g.getAdjNum(3), 2);
+    EXPECT_EQ(g.getAdjNum(4), 2);
+    EXPECT_EQ(g.getAdjNum(5), 1);
 }
 
 TEST(GraphTest, GetAdjNumIsCorrectAfterRemovingAllEdges) {
@@ -152,6 +169,14 @@ TEST(GraphTest, UninitVertWeightIsOne) {
     EXPECT_EQ(g.getVertWeight(0), 1);
 }
 
+TEST(GraphTest, CopyConstructorWorks) {
+    graph g1(2);
+    g1.addEdge(0, 1);
+    graph g2 = g1;
+    EXPECT_EQ(g2.isConnected(0, 1), g1.isConnected(0, 1));
+    EXPECT_EQ(g2.getVertNum(), g1.getVertNum());
+}
+
 TEST(VertexCoverTest, vertexCoverTwoApproximate) {
     graph g(6);
 
@@ -167,6 +192,7 @@ TEST(VertexCoverTest, vertexCoverTwoApproximate) {
     g.addEdge(0, 1);
     g.addEdge(0, 2);
     g.addEdge(1, 2);
+    g.addEdge(1, 3);
     g.addEdge(2, 3);
     g.addEdge(2, 4);
     g.addEdge(4, 5);
@@ -181,6 +207,116 @@ TEST(VertexCoverTest, vertexCoverTwoApproximate) {
     EXPECT_EQ(vertex_cover[5], 5);
 }
 
+TEST(VertexCoverTest, vertexCoverHeuristicLR) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
+
+    gcont vertex_cover = vertexCoverHeuristicLR(&g);
+
+    EXPECT_EQ(vertex_cover[0], 1);
+    EXPECT_EQ(vertex_cover[1], 2);
+    EXPECT_EQ(vertex_cover[2], 5);
+}
+
+TEST(VertexCoverTest, vertexCoverHeuristicLL) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
+
+    gcont vertex_cover = vertexCoverHeuristicLL(&g);
+
+    EXPECT_EQ(vertex_cover[0], 0);
+    EXPECT_EQ(vertex_cover[1], 1);
+    EXPECT_EQ(vertex_cover[2], 2);
+    EXPECT_EQ(vertex_cover[3], 4);
+}
+
+TEST(VertexCoverTest, vertexCoverHeuristicSLL) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
+
+    gcont vertex_cover = vertexCoverHeuristicSLL(&g);
+
+    EXPECT_EQ(vertex_cover[0], 1);
+    EXPECT_EQ(vertex_cover[1], 2);
+    EXPECT_EQ(vertex_cover[2], 4);
+}
+
+TEST(VertexCoverTest, vertexCoverHeuristicASLL) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
+
+    gcont vertex_cover = vertexCoverHeuristicASLL(&g);
+
+    std::cout << vertex_cover.size() << std::endl;
+
+    EXPECT_EQ(vertex_cover[0], 1);
+    EXPECT_EQ(vertex_cover[1], 2);
+    EXPECT_EQ(vertex_cover[2], 4);
+}
 
 TEST(VertexCoverTest, Greedy) {
     graph g(6);
@@ -246,6 +382,40 @@ TEST(VertexCoverTest, PrimalDual) {
     EXPECT_EQ(vertex_cover[4], 4);
 }
 
+TEST(GeneratorTest, Grid) {
+    graph g = generateGridGraph(2, 2);
+
+    EXPECT_EQ(g.isConnected(0, 1), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(0, 2), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(1, 3), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(2, 3), GRAPH_TRUE);
+}
+
+TEST(GeneratorTest, Hypercube) {
+    graph g = generateHypercubeGraph(4);
+
+    EXPECT_EQ(g.isConnected(0, 1), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(0, 2), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(1, 3), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(2, 3), GRAPH_TRUE);
+}
+
+TEST(GeneratorTest, generateCompBipartiteGraph) {
+    graph g = generateCompBipartiteGraph(2);
+
+    EXPECT_EQ(g.isConnected(0, 2), GRAPH_TRUE);
+    EXPECT_EQ(!g.isConnected(0, 1), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(0, 3), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(1, 2), GRAPH_TRUE);
+    EXPECT_EQ(!g.isConnected(2, 3), GRAPH_TRUE);
+    EXPECT_EQ(g.isConnected(1, 3), GRAPH_TRUE);
+}
+
+//TEST(GeneratorTest, Butterfly) {
+//    graph g = generateButterflyGraph(3);
+//
+//    EXPECT_EQ(1, 1);
+//}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
