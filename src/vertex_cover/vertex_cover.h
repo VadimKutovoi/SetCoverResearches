@@ -7,6 +7,13 @@
 #ifndef SRC_VERTEX_COVER_VERTEX_COVER_H_
 #define SRC_VERTEX_COVER_VERTEX_COVER_H_
 
+#define VCOVER_HEURISTIC_LR 1
+#define VCOVER_HEURISTIC_ED 2
+#define VCOVER_HEURISTIC_SPITT 3
+#define VCOVER_HEURISTIC_LL 4
+#define VCOVER_HEURISTIC_SLL 5
+#define VCOVER_HEURISTIC_ASLL 6
+
 gcont vertexCoverTwoApproximate(const graph *g) {
     gcont vert_cover;
     vmark vert_num = g->getVertNum();
@@ -35,6 +42,113 @@ gcont vertexCoverTwoApproximate(const graph *g) {
     delete[] is_visited;
 
     return vert_cover;
+}
+
+gcont vertexCoverHeuristicLR(const graph *g) {
+    gcont vertex_cover;
+    vmark vert_num = g->getVertNum();
+    bool *in_cover = new bool[vert_num];
+
+    for (int i = 0; i < vert_num; i++)
+        in_cover[i] = false;
+
+    for (int curr_vert = 0; curr_vert < vert_num; curr_vert++) {
+        if (!in_cover[curr_vert]) {
+            for (const vmark &adj_vert : g->getAdjList(curr_vert)) {
+                if (!in_cover[adj_vert]) {
+                    in_cover[adj_vert] = true;
+                    vertex_cover.push_back(adj_vert);
+                }
+            }
+        }
+    }
+
+    delete[] in_cover;
+
+    return vertex_cover;
+}
+
+gcont vertexCoverHeuristicED(const graph *g) {
+    gcont vert_cover;
+    vmark vert_num = g->getVertNum();
+
+    bool *is_visited = new bool[vert_num];
+    for (int i = 0; i < vert_num; i++)
+        is_visited[i] = false;
+
+    for (int vert = 0; vert < vert_num; vert++) {
+        if (!is_visited[vert]) {
+            gcont adj = g->getAdjList(vert);
+
+            for (const vmark &adj_vert : adj) {
+                if (!is_visited[adj_vert]) {
+                    is_visited[vert] = true;
+                    is_visited[adj_vert] = true;
+                    vert_cover.push_back(vert);
+                    vert_cover.push_back(adj_vert);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    delete[] is_visited;
+
+    return vert_cover;
+}
+
+// ListLeft
+gcont vertexCoverHeuristicLL(const graph *g) {
+    gcont vertex_cover;
+    vmark vert_num = g->getVertNum();
+
+    for (int curr_vert = 0; curr_vert < vert_num; curr_vert++) {
+        for (const vmark &adj_vert : g->getAdjList(curr_vert)) {
+            if (adj_vert > curr_vert) {
+                vertex_cover.push_back(curr_vert);
+                break;
+            }
+        }
+    }
+
+    return vertex_cover;
+}
+
+// Sorted-LL
+gcont vertexCoverHeuristicSLL(const graph *g) {
+    gcont vertex_cover;
+    vmark vert_num = g->getVertNum();
+
+    for (int curr_vert = 0; curr_vert < vert_num; curr_vert++) {
+        for (const vmark &adj_vert : g->getAdjList(curr_vert)) {
+            if (g->getAdjNum(adj_vert) <= g->getAdjNum(curr_vert) && \
+                adj_vert > curr_vert) {
+                vertex_cover.push_back(curr_vert);
+                break;
+            }
+        }
+    }
+
+    return vertex_cover;
+}
+
+// Anti Sorted-LL
+gcont vertexCoverHeuristicASLL(const graph *g) {
+    gcont vertex_cover;
+    vmark vert_num = g->getVertNum();
+
+    for (int curr_vert = 0; curr_vert < vert_num; curr_vert++) {
+        for (const vmark &adj_vert : g->getAdjList(curr_vert)) {
+            if (g->getAdjNum(adj_vert) >= g->getAdjNum(curr_vert) && \
+                adj_vert < curr_vert) {
+                vertex_cover.push_back(curr_vert);
+                break;
+            }
+        }
+    }
+
+    return vertex_cover;
 }
 
 gcont vertexCoverGreedy(graph *g) {
