@@ -318,6 +318,45 @@ TEST(VertexCoverTest, vertexCoverHeuristicASLL) {
     EXPECT_EQ(vertex_cover[2], 4);
 }
 
+TEST(VertexCoverTest, vertexCoverHeuristicSPITT) {
+    graph g(6);
+
+    /*     1-----3
+          /|    /
+         / |   /
+        0  |  /     5
+         \ | /     /
+          \|/     /
+           2-----4
+    */
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 3);
+    g.addEdge(2, 4);
+    g.addEdge(4, 5);
+
+    g.setVertWeight(0, 5);
+    g.setVertWeight(1, 2);
+    g.setVertWeight(2, 7);
+    g.setVertWeight(3, 1);
+    g.setVertWeight(4, 10);
+    g.setVertWeight(5, 8);
+
+    gcont vertex_cover = vertexCoverHeuristicSPITT(&g);
+
+    for (const auto &i : vertex_cover)
+        std::cout << i << std::endl;
+
+    EXPECT_EQ(vertex_cover[0], 1);
+    EXPECT_EQ(vertex_cover[1], 0);
+    EXPECT_EQ(vertex_cover[2], 3);
+    EXPECT_EQ(vertex_cover[3], 2);
+    EXPECT_EQ(vertex_cover[4], 4);
+}
+
 TEST(VertexCoverTest, Greedy) {
     graph g(6);
     graph *gptr = &g;
