@@ -19,8 +19,8 @@ graph generateProbGraph(vmark num_vertices, float probability) {
     for (auto v1 = 0; v1 < num_vertices; v1++) {
         for (auto v2 = 0; v2 < num_vertices; v2++) {
             if (dist(e2) <= probability * 100 \
-                && i != j && !g.isConnected(i, j)) {
-                g.addEdge(i, j);
+                && v1 != v2 && !g.isConnected(v1, v2)) {
+                g.addEdge(v1, v2);
             }
         }
     }
