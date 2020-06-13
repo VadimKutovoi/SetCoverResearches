@@ -2,7 +2,7 @@
 
 #ifndef SRC_GRAPH_GRAPH_H_
 #define SRC_GRAPH_GRAPH_H_
-#define GRAPH_ENABLE_VERBOSE
+
 #include <vector>
 #include <algorithm>
 #ifdef GRAPH_ENABLE_VERBOSE
@@ -23,11 +23,13 @@ class graph {
     vmark num_vertices;
     vmark *adj_num;
     vmark *vert_weight;
+    vmark num_edges;
     gcont *adj_matrix;
 
  public:
     explicit graph(vmark _num_vertices) : num_vertices(_num_vertices) {
         try {
+            num_edges = 0;
             adj_matrix = new gcont[_num_vertices];
             adj_num = new vmark[_num_vertices];
             vert_weight = new vmark[_num_vertices];
@@ -47,11 +49,10 @@ class graph {
     }
 
     graph(const graph &g) : num_vertices(g.num_vertices) {
-        graph new_graph(num_vertices);
-
         adj_matrix = new gcont[num_vertices];
         adj_num = new vmark[num_vertices];
         vert_weight = new vmark[num_vertices];
+        num_edges = g.getNumEdges();
 
         for (int i = 0; i < num_vertices; i++) {
             adj_num[i] = g.adj_num[i];
@@ -73,6 +74,7 @@ class graph {
     vmark setVertWeight(vmark vertex, vmark weight);
     vmark getVertWeight(vmark vertex) const;
     vmark getAdjNum(vmark vertex) const;
+    vmark getNumEdges() const;
     gcont getAdjList(vmark vertex) const;
 
     bool isConnected(vmark begin, vmark end) const;
@@ -100,6 +102,7 @@ gerror graph::addEdge(vmark begin, vmark end) {
     adj_matrix[end].push_back(begin);
     adj_num[begin]++;
     adj_num[end]++;
+    num_edges++;
 
     return GRAPH_SUCCESS;
 }
@@ -132,6 +135,7 @@ gerror graph::removeEdge(vmark begin, vmark end) {
 
         adj_num[begin]--;
         adj_num[end]--;
+        num_edges--;
 
         return GRAPH_SUCCESS;
     }
@@ -158,6 +162,10 @@ gcont graph::getAdjList(vmark vertex) const {
     }
     gcont ret;
     return ret;
+}
+
+vmark graph::getNumEdges() const {
+    return num_edges;
 }
 
 vmark graph::getAdjNum(vmark vertex) const {
